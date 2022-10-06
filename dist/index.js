@@ -9695,7 +9695,7 @@ async function run() {
     const packageName = pkg[0] || null;
     const packageTag = pkg[1] || null;
 
-    if (null === packageName || null == packageTag) {
+    if (null === packageName || null === packageTag) {
         core.setFailed(`The package name "${pkg} is invalid. Example format: owner/image_name:tag`);
     }
 
@@ -9704,14 +9704,27 @@ async function run() {
         package_name: packageName,
     });
 
-    Object.values(packages.data).forEach(pkg => {
-        if (pkg.metadata.container.tags.includes(packageTag)) {
-            octokit.rest.packages.deletePackageVersionForAuthenticatedUser({
-                package_type: 'container',
-                package_name: packageName,
-                package_version_id: pkg.id,
-            });
-        }
+    const packageData = Object.values(packages.data);
+    const totalPackages = Object.values(packages.data).length
+
+    const packageTodDelete = packageData.filter(pkg => {
+        return pkg.metadata.container.tags.includes(packageTag);
+    });
+
+    if (totalPackages === packageTodDelete.length) {
+        await octokit.rest.packages.deletePackageForAuthenticatedUser({
+            package_type: 'container',
+            package_name: packageName,
+        });
+        return;
+    }
+
+    packageTodDelete.forEach(pkg => {
+        octokit.rest.packages.deletePackageVersionForAuthenticatedUser({
+            package_type: 'container',
+            package_name: packageName,
+            package_version_id: pkg.id,
+        });
     });
 }
 
