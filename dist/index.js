@@ -9705,14 +9705,16 @@ async function run() {
     });
 
     const packageData = Object.values(packages.data);
-    const totalPackages = Object.values(packages.data).length
 
     const packageTodDelete = packageData.filter(pkg => {
         return pkg.metadata.container.tags.includes(packageTag);
     });
 
-    if (totalPackages === packageTodDelete.length) {
-        await octokit.rest.packages.deletePackageForAuthenticatedUser({
+    core.info(packageData.length)
+    core.info(packageTodDelete.length)
+
+    if (packageData.length === packageTodDelete.length) {
+        octokit.rest.packages.deletePackageForAuthenticatedUser({
             package_type: 'container',
             package_name: packageName,
         });
