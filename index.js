@@ -13,15 +13,15 @@ async function run() {
         core.setFailed(`The package name "${pkg} is invalid. Example format: owner/image_name:tag`);
     }
 
-    console.log(packageName);
-    console.log(packageTag);
+    core.info(packageName)
+    core.info(packageTag)
 
     const packages = await octokit.rest.packages.getAllPackageVersionsForPackageOwnedByAuthenticatedUser({
         package_type: 'container',
         package_name: packageName,
     });
 
-    console.log(packages);
+    core.info(packages);
 
     Object.values(packages.data).forEach(pkg => {
         if (pkg.metadata.container.tags.includes(packageTag)) {
@@ -34,4 +34,4 @@ async function run() {
     });
 }
 
-run()
+run().catch(error => core.setFailed("Workflow failed! " + error.message));
