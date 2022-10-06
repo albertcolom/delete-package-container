@@ -9,6 +9,10 @@ async function run() {
     const packageName = pkg[0] || null;
     const packageTag = pkg[1] || null;
 
+    if (null === packageName || null == packageTag) {
+        core.setFailed(`The package name "${pkg} is invalid. Example format: project-name/package:tag`);
+    }
+
     const packages = await octokit.rest.packages.getAllPackageVersionsForPackageOwnedByAuthenticatedUser({
         package_type: 'container',
         package_name: packageName.replace('/', '%2F'),
