@@ -6,7 +6,7 @@ async function run() {
     const octokit = github.getOctokit(token);
 
     const pkg = core.getInput('package').split(':');
-    const packageName = pkg[0] ? pkg[0].replace('/', '%2F') : null;
+    const packageName = pkg[0] || null;
     const packageTag = pkg[1] || null;
 
     if (null === packageName || null == packageTag) {
