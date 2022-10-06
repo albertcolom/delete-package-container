@@ -9695,19 +9695,32 @@ async function run() {
     const packageName = pkg[0] || null;
     const packageTag = pkg[1] || null;
 
+    if (null === packageName || null == packageTag) {
+        core.setFailed(`The package name "${pkg} is invalid. Example format: owner/image_name:tag`);
+    }
+
+    core.info(packageName)
+    core.info(packageTag)
+
     const packages = await octokit.rest.packages.getAllPackageVersionsForPackageOwnedByAuthenticatedUser({
         package_type: 'container',
-        package_name: packageName.replace('/', '%2F'),
+        package_name: packageName,
     });
 
+    core.info(packages);
+
     Object.values(packages.data).forEach(pkg => {
-        console.log('Package ID: '+ pkg.id)
-        console.log(pkg.metadata.container.tags)
-        console.log(pkg.metadata.container.tags.includes(packageTag))
+        if (pkg.metadata.container.tags.includes(packageTag)) {
+            octokit.rest.packages.deletePackageVersionForAuthenticatedUser({
+                package_type: 'container',
+                package_name: packageName,
+                package_version_id: pkg.id,
+            });
+        }
     });
 }
 
-run().catch(error => core.setFailed("Workflow failed! " + error.message));
+run().catch(error => core.info(error.message));
 
 })();
 
