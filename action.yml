@@ -1,0 +1,12 @@
+name: 'Delete package container'
+description: 'Delete package container'
+inputs:
+  package:
+    description: 'The package name with tag'
+    required: true
+  token:
+    description: 'The token to use to access the GitHub API'
+    required: true
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
