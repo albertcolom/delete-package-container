@@ -24,6 +24,7 @@ async function run() {
         return pkg.metadata.container.tags.includes(packageTag);
     });
 
+    console.log(packageTodDelete)
     core.info(packageData.length)
     core.info(packageTodDelete.length)
 
