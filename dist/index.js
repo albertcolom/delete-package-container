@@ -9696,7 +9696,7 @@ async function run() {
     const packageTag = pkg[1] || null;
 
     if (null === packageName || null === packageTag) {
-        core.setFailed(`The package name "${pkg} is invalid. Example format: owner/image_name:tag`);
+        core.setFailed(`The package name "${pkg}" is invalid. Example format: owner/image_name:tag`);
     }
 
     const packages = await octokit.rest.packages.getAllPackageVersionsForPackageOwnedByAuthenticatedUser({
@@ -9705,15 +9705,14 @@ async function run() {
     });
 
     const packageData = Object.values(packages.data);
-
     const packageTodDelete = packageData.filter(pkg => {
         return pkg.metadata.container.tags.includes(packageTag);
     });
 
-    core.info(packageData.length)
-    core.info(packageTodDelete.length)
+    const totalPackageTodDelete = packageTodDelete.length;
+    core.info(`Found "${totalPackageTodDelete}" package to delete`)
 
-    if (packageData.length === packageTodDelete.length) {
+    if (packageData.length === totalPackageTodDelete) {
         octokit.rest.packages.deletePackageForAuthenticatedUser({
             package_type: 'container',
             package_name: packageName,
