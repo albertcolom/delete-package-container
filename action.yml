@@ -1,8 +1,8 @@
 name: 'Delete package container'
 description: 'Delete package container'
 inputs:
-  package:
-    description: 'The package name with tag'
+  image:
+    description: 'The image with tag'
     required: true
   token:
     description: 'The token to use to access the GitHub API'

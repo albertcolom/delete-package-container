@@ -5,12 +5,12 @@ async function run() {
     const token = core.getInput('token');
     const octokit = github.getOctokit(token);
 
-    const pkg = core.getInput('package').split(':');
-    const packageName = pkg[0] || null;
-    const packageTag = pkg[1] || null;
+    const image = core.getInput('image').split(':');
+    const packageName = image[0] || null;
+    const packageTag = image[1] || null;
 
     if (null === packageName || null === packageTag) {
-        core.setFailed(`The package name "${pkg}" is invalid. Example format: owner/image_name:tag`);
+        throw new Error(`The image name "${image}" is invalid. Example format: owner/image_name:tag or image_name:tag`);
     }
 
     const packages = await octokit.rest.packages.getAllPackageVersionsForPackageOwnedByAuthenticatedUser({
