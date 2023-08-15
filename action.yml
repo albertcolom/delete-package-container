@@ -1,5 +1,8 @@
 name: 'Delete package container'
 description: 'Delete package container'
+branding:
+  icon: 'package'
+  color: 'red'
 inputs:
   image:
     description: 'The image with tag'
